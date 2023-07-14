@@ -44,7 +44,7 @@ class Conversation:
 
     def __init__(self):
         # Set the first message in the context 
-        self._update("system", Conversation.initialContext)
+        self._update("system", self.initialContext)
 
     def ask(self, prompt):
         # This function asks questions via the API.
@@ -54,7 +54,7 @@ class Conversation:
 
         response = openai.ChatCompletion.create(
             model="gpt-4-0613" if GPT4 else "gpt-3.5-turbo-0613",
-            messages=Conversation.messages,  # sends all the context, including the last question
+            messages=self.messages,  # sends all the context, including the last question
             temperature=0,
         )
 
@@ -67,7 +67,7 @@ class Conversation:
     def _update(self, role, content):
         # Keeps the context up to date
 
-        Conversation.messages.append(
+        self.messages.append(
             {
                 "role": role,
                 "content": content,
@@ -75,11 +75,11 @@ class Conversation:
         )
 
         # Tries to keep the context size manageable.
-        if len(Conversation.messages) > 20:
-            Conversation.messages.pop(1) # don't remove index 0 which contains the initial context
+        if len(self.messages) > 20:
+            self.messages.pop(1) # don't remove index 0 which contains the initial context
 
     def printContext(self):
-        for i, item in enumerate(Conversation.messages):
+        for i, item in enumerate(self.messages):
             if (item['role'] != "assistant"):
                 print(i, '-', item['role'], '-', item['content'])
 
@@ -93,7 +93,7 @@ def main():
             break
         # Otherwise, print the user's input
         else:
-            conversation.printContext()
+            #conversation.printContext()
             print("  ", conversation.ask(user_input))
 
     print("Exiting...")
